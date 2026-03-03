@@ -1,0 +1,228 @@
+# ============================================================
+# Experiment List 26 Jan 2026 To 1 Feb 2026
+# School of Computer Science and Engineering
+# Programming Ability and Logic Building - 1
+# ============================================================
+
+# ── LECTURE 1 — IN CLASS ────────────────────────────────────
+
+# Q1. Kth Smallest Element
+# Link: https://www.geeksforgeeks.org/problems/kth-smallest-element5635/1
+def kth_smallest(arr, k):
+    return sorted(arr)[k - 1]
+
+print("Q1:", kth_smallest([10, 5, 4, 3, 48, 6, 2, 33, 53, 10], 4))  # 5
+print("Q1:", kth_smallest([7, 10, 4, 3, 20, 15], 3))                 # 7
+
+
+# Q2. Minimize the Heights
+# Link: https://www.geeksforgeeks.org/problems/minimize-the-heights3351/1
+def minimize_heights(arr, k):
+    n = len(arr)
+    if n == 1:
+        return 0
+    arr.sort()
+    result = arr[-1] - arr[0]  # worst case: no change
+    for i in range(1, n):
+        mn = min(arr[0] + k, arr[i] - k)
+        mx = max(arr[i - 1] + k, arr[-1] - k)
+        if mn < 0:
+            continue
+        result = min(result, mx - mn)
+    return result
+
+print("Q2:", minimize_heights([1, 5, 8, 10], 2))      # 5
+print("Q2:", minimize_heights([3, 9, 12, 16, 20], 3)) # 11
+
+
+# ── LECTURE 1 — TAKE HOME ───────────────────────────────────
+
+# Q3. Minimum Number of Jumps
+# Link: https://www.geeksforgeeks.org/problems/minimum-number-of-jumps-1587115620/1
+def min_jumps(arr):
+    n = len(arr)
+    if n == 1:
+        return 0
+    if arr[0] == 0:
+        return -1
+    jumps, current_end, farthest = 0, 0, 0
+    for i in range(n - 1):
+        farthest = max(farthest, i + arr[i])
+        if i == current_end:
+            jumps += 1
+            current_end = farthest
+            if current_end >= n - 1:
+                return jumps
+    return -1
+
+print("Q3:", min_jumps([1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9]))  # 3
+print("Q3:", min_jumps([1, 4, 3, 2, 6, 7]))                  # 2
+print("Q3:", min_jumps([0, 10, 20]))                          # -1
+
+
+# Q4. Find the Duplicate Number (Floyd's Cycle Detection)
+# Link: https://leetcode.com/problems/find-the-duplicate-number/
+def find_duplicate(nums):
+    slow = fast = nums[0]
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if slow == fast:
+            break
+    slow = nums[0]
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
+    return slow
+
+print("Q4:", find_duplicate([1, 3, 4, 2, 2]))  # 2
+print("Q4:", find_duplicate([3, 1, 3, 4, 2]))  # 3
+
+
+# Q5. Merge Two Sorted Arrays Without Extra Space
+# Link: https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1
+def merge_sorted_arrays(a, b):
+    n, m = len(a), len(b)
+    i, j = n - 1, 0
+    while i >= 0 and j < m:
+        if a[i] > b[j]:
+            a[i], b[j] = b[j], a[i]
+        i -= 1
+        j += 1
+    a.sort()
+    b.sort()
+    return a, b
+
+a, b = [2, 4, 7, 10], [2, 3]
+print("Q5:", merge_sorted_arrays(a, b))  # ([2, 2, 3, 4], [7, 10])
+
+
+# Q6. Merge Overlapping Intervals
+# Link: https://leetcode.com/problems/merge-intervals/
+def merge_intervals(intervals):
+    if not intervals:
+        return []
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+
+print("Q6:", merge_intervals([[1,3],[2,6],[8,10],[15,18]]))  # [[1,6],[8,10],[15,18]]
+print("Q6:", merge_intervals([[1,4],[4,5]]))                 # [[1,5]]
+print("Q6:", merge_intervals([[4,7],[1,4]]))                 # [[1,7]]
+
+
+# ── LECTURE 2 — IN CLASS ────────────────────────────────────
+
+# Q7. Common Elements in Three Sorted Arrays
+# Link: https://www.geeksforgeeks.org/problems/common-elements1132/1
+def common_elements(arr1, arr2, arr3):
+    result = []
+    i = j = k = 0
+    while i < len(arr1) and j < len(arr2) and k < len(arr3):
+        if arr1[i] == arr2[j] == arr3[k]:
+            if not result or result[-1] != arr1[i]:
+                result.append(arr1[i])
+            i += 1; j += 1; k += 1
+        elif arr1[i] <= arr2[j] and arr1[i] <= arr3[k]:
+            i += 1
+        elif arr2[j] <= arr1[i] and arr2[j] <= arr3[k]:
+            j += 1
+        else:
+            k += 1
+    return result if result else [-1]
+
+print("Q7:", common_elements([1,5,10,20,40,80],[6,7,20,80,100],[3,4,15,20,30,70,80,120]))
+# [20, 80]
+print("Q7:", common_elements([1,2,3,4,5],[6,7],[8,9,10]))  # [-1]
+
+
+# Q8. Factorial of Large Numbers
+# Link: https://www.geeksforgeeks.org/problems/factorials-of-large-numbers2508/1
+def factorial_large(n):
+    result = [1]
+    for i in range(2, n + 1):
+        carry = 0
+        for j in range(len(result)):
+            prod = result[j] * i + carry
+            result[j] = prod % 10
+            carry = prod // 10
+        while carry:
+            result.append(carry % 10)
+            carry //= 10
+    return result[::-1]
+
+print("Q8:", factorial_large(5))   # [1, 2, 0]
+print("Q8:", factorial_large(10))  # [3, 6, 2, 8, 8, 0, 0]
+
+
+# ── LECTURE 2 — TAKE HOME ───────────────────────────────────
+
+# Q9. Array Subset of Another Array
+# Link: https://www.geeksforgeeks.org/problems/array-subset-of-another-array2317/1
+from collections import Counter
+
+def is_subset(a, b):
+    count_a = Counter(a)
+    count_b = Counter(b)
+    for key, val in count_b.items():
+        if count_a[key] < val:
+            return False
+    return True
+
+print("Q9:", is_subset([11,7,1,13,21,3,7,3],[11,3,7,1,7]))  # True
+print("Q9:", is_subset([10,5,2,23,19],[19,5,3]))             # False
+
+
+# Q10. Triplet Sum in Array
+# Link: https://www.geeksforgeeks.org/problems/triplet-sum-in-array1587115621/1
+def triplet_sum(arr, target):
+    arr.sort()
+    n = len(arr)
+    for i in range(n - 2):
+        left, right = i + 1, n - 1
+        while left < right:
+            s = arr[i] + arr[left] + arr[right]
+            if s == target:
+                return True
+            elif s < target:
+                left += 1
+            else:
+                right -= 1
+    return False
+
+print("Q10:", triplet_sum([1, 4, 45, 6, 10, 8], 13))   # True
+print("Q10:", triplet_sum([40, 20, 10, 3, 6, 7], 24))  # False
+
+
+# Q11. Trapping Rain Water
+# Link: https://www.geeksforgeeks.org/problems/trapping-rain-water1587115621/1
+def trap_water(arr):
+    if len(arr) < 3:
+        return 0
+    left, right = 0, len(arr) - 1
+    left_max = right_max = 0
+    water = 0
+    while left < right:
+        if arr[left] < arr[right]:
+            if arr[left] >= left_max:
+                left_max = arr[left]
+            else:
+                water += left_max - arr[left]
+            left += 1
+        else:
+            if arr[right] >= right_max:
+                right_max = arr[right]
+            else:
+                water += right_max - arr[right]
+            right -= 1
+    return water
+
+print("Q11:", trap_water([3, 0, 1, 0, 4, 0, 2]))      # 10
+print("Q11:", trap_water([3, 0, 2, 0, 4]))             # 7
+print("Q11:", trap_water([1, 2, 3, 4]))                # 0
+print("Q11:", trap_water([2, 1, 5, 3, 1, 0, 4]))      # 9
