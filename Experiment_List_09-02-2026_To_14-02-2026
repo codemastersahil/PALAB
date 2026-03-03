@@ -1,0 +1,304 @@
+# ============================================================
+# Experiment List 09 Feb 2026 To 14 Feb 2026
+# School of Computer Science and Engineering
+# Programming Ability and Logic Building - 1
+# ============================================================
+
+import bisect
+from collections import defaultdict
+
+# ── LECTURE 1 — IN CLASS ────────────────────────────────────
+
+# Q1. Search Insert Position
+# Link: https://leetcode.com/problems/search-insert-position/
+def search_insert(nums, target):
+    left, right = 0, len(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+print("Q1:", search_insert([1, 3, 5, 6], 5))  # 2
+print("Q1:", search_insert([1, 3, 5, 6], 2))  # 1
+print("Q1:", search_insert([1, 3, 5, 6], 7))  # 4
+
+
+# Q2. Combination Sum I (same element reusable)
+# Link: https://leetcode.com/problems/combination-sum/
+def combination_sum(candidates, target):
+    result = []
+    candidates.sort()
+    def backtrack(start, current, remaining):
+        if remaining == 0:
+            result.append(list(current))
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] > remaining:
+                break
+            current.append(candidates[i])
+            backtrack(i, current, remaining - candidates[i])
+            current.pop()
+    backtrack(0, [], target)
+    return result
+
+print("Q2:", combination_sum([2, 3, 6, 7], 7))   # [[2,2,3],[7]]
+print("Q2:", combination_sum([2, 3, 5], 8))       # [[2,2,2,2],[2,3,3],[3,5]]
+
+
+# ── LECTURE 1 — TAKE HOME ───────────────────────────────────
+
+# Q3. Combination Sum II (each element used once, no duplicate combos)
+# Link: https://leetcode.com/problems/combination-sum-ii/
+def combination_sum2(candidates, target):
+    result = []
+    candidates.sort()
+    def backtrack(start, current, remaining):
+        if remaining == 0:
+            result.append(list(current))
+            return
+        for i in range(start, len(candidates)):
+            if i > start and candidates[i] == candidates[i - 1]:
+                continue
+            if candidates[i] > remaining:
+                break
+            current.append(candidates[i])
+            backtrack(i + 1, current, remaining - candidates[i])
+            current.pop()
+    backtrack(0, [], target)
+    return result
+
+print("Q3:", combination_sum2([10,1,2,7,6,1,5], 8))  # [[1,1,6],[1,2,5],[1,7],[2,6]]
+
+
+# Q4. Jump Game II — Minimum Jumps
+# Link: https://leetcode.com/problems/jump-game-ii/
+def jump_game_ii(nums):
+    jumps = 0
+    current_end = 0
+    farthest = 0
+    for i in range(len(nums) - 1):
+        farthest = max(farthest, i + nums[i])
+        if i == current_end:
+            jumps += 1
+            current_end = farthest
+    return jumps
+
+print("Q4:", jump_game_ii([2, 3, 1, 1, 4]))  # 2
+print("Q4:", jump_game_ii([2, 3, 0, 1, 4]))  # 2
+
+
+# Q5. Group Anagrams
+# Link: https://leetcode.com/problems/group-anagrams/
+def group_anagrams(strs):
+    groups = defaultdict(list)
+    for s in strs:
+        key = tuple(sorted(s))
+        groups[key].append(s)
+    return list(groups.values())
+
+print("Q5:", group_anagrams(["eat","tea","tan","ate","nat","bat"]))
+# [["eat","tea","ate"],["tan","nat"],["bat"]]
+
+
+# Q6. Plus One
+# Link: https://leetcode.com/problems/plus-one/
+def plus_one(digits):
+    for i in range(len(digits) - 1, -1, -1):
+        if digits[i] < 9:
+            digits[i] += 1
+            return digits
+        digits[i] = 0
+    return [1] + digits
+
+print("Q6:", plus_one([1, 2, 3]))   # [1, 2, 4]
+print("Q6:", plus_one([9]))         # [1, 0]
+
+
+# Q7. Set Matrix Zeroes
+# Link: https://leetcode.com/problems/set-matrix-zeroes/
+def set_zeroes(matrix):
+    rows = set()
+    cols = set()
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] == 0:
+                rows.add(i)
+                cols.add(j)
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if i in rows or j in cols:
+                matrix[i][j] = 0
+    return matrix
+
+print("Q7:", set_zeroes([[1,1,1],[1,0,1],[1,1,1]]))
+# [[1,0,1],[0,0,0],[1,0,1]]
+
+
+# ── LECTURE 2 — IN CLASS ────────────────────────────────────
+
+# Q8. Search a 2D Matrix
+# Link: https://leetcode.com/problems/search-a-2d-matrix/
+def search_matrix(matrix, target):
+    m, n = len(matrix), len(matrix[0])
+    left, right = 0, m * n - 1
+    while left <= right:
+        mid = (left + right) // 2
+        val = matrix[mid // n][mid % n]
+        if val == target:
+            return True
+        elif val < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return False
+
+print("Q8:", search_matrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 3))   # True
+print("Q8:", search_matrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 13))  # False
+
+
+# Q9. Sort Colors (Dutch National Flag)
+# Link: https://leetcode.com/problems/sort-colors/
+def sort_colors(nums):
+    low, mid, high = 0, 0, len(nums) - 1
+    while mid <= high:
+        if nums[mid] == 0:
+            nums[low], nums[mid] = nums[mid], nums[low]
+            low += 1; mid += 1
+        elif nums[mid] == 1:
+            mid += 1
+        else:
+            nums[mid], nums[high] = nums[high], nums[mid]
+            high -= 1
+    return nums
+
+print("Q9:", sort_colors([2, 0, 2, 1, 1, 0]))  # [0, 0, 1, 1, 2, 2]
+print("Q9:", sort_colors([2, 0, 1]))            # [0, 1, 2]
+
+
+# ── LECTURE 2 — TAKE HOME ───────────────────────────────────
+
+# Q10. Subsets / Power Set
+# Link: https://leetcode.com/problems/subsets/
+def subsets(nums):
+    result = [[]]
+    for num in nums:
+        result += [curr + [num] for curr in result]
+    return result
+
+print("Q10:", subsets([1, 2, 3]))  # [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+
+# Q11. Word Search in Grid (DFS/Backtracking)
+# Link: https://leetcode.com/problems/word-search/
+def word_search(board, word):
+    rows, cols = len(board), len(board[0])
+    def dfs(r, c, idx):
+        if idx == len(word):
+            return True
+        if r < 0 or r >= rows or c < 0 or c >= cols or board[r][c] != word[idx]:
+            return False
+        temp, board[r][c] = board[r][c], '#'
+        found = (dfs(r+1, c, idx+1) or dfs(r-1, c, idx+1) or
+                 dfs(r, c+1, idx+1) or dfs(r, c-1, idx+1))
+        board[r][c] = temp
+        return found
+    for r in range(rows):
+        for c in range(cols):
+            if dfs(r, c, 0):
+                return True
+    return False
+
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+print("Q11:", word_search([row[:] for row in board], "ABCCED"))  # True
+print("Q11:", word_search([row[:] for row in board], "SEE"))     # True
+print("Q11:", word_search([row[:] for row in board], "ABCB"))    # False
+
+
+# Q12. 4Sum
+# Link: https://leetcode.com/problems/4sum/
+def four_sum(nums, target):
+    nums.sort()
+    n = len(nums)
+    result = []
+    for i in range(n - 3):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        for j in range(i + 1, n - 2):
+            if j > i + 1 and nums[j] == nums[j - 1]:
+                continue
+            left, right = j + 1, n - 1
+            while left < right:
+                s = nums[i] + nums[j] + nums[left] + nums[right]
+                if s == target:
+                    result.append([nums[i], nums[j], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left + 1]: left += 1
+                    while left < right and nums[right] == nums[right - 1]: right -= 1
+                    left += 1; right -= 1
+                elif s < target:
+                    left += 1
+                else:
+                    right -= 1
+    return result
+
+print("Q12:", four_sum([1, 0, -1, 0, -2, 2], 0))  # [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+
+# Q13. Search in Rotated Sorted Array
+# Link: https://leetcode.com/problems/search-in-rotated-sorted-array/
+def search_rotated(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[left] <= nums[mid]:  # left half sorted
+            if nums[left] <= target < nums[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:  # right half sorted
+            if nums[mid] < target <= nums[right]:
+                left = mid + 1
+            else:
+                right = mid - 1
+    return -1
+
+print("Q13:", search_rotated([4,5,6,7,0,1,2], 0))  # 4
+print("Q13:", search_rotated([4,5,6,7,0,1,2], 3))  # -1
+
+
+# Q14. Find First and Last Position of Element in Sorted Array
+# Link: https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+def search_range(nums, target):
+    def find_left(nums, target):
+        lo, hi, idx = 0, len(nums) - 1, -1
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            if nums[mid] == target:
+                idx = mid; hi = mid - 1
+            elif nums[mid] < target:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        return idx
+
+    def find_right(nums, target):
+        lo, hi, idx = 0, len(nums) - 1, -1
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            if nums[mid] == target:
+                idx = mid; lo = mid + 1
+            elif nums[mid] < target:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        return idx
+
+    return [find_left(nums, target), find_right(nums, target)]
+
+print("Q14:", search_range([5, 7, 7, 8, 8, 10], 8))  # [3, 4]
+print("Q14:", search_range([5, 7, 7, 8, 8, 10], 6))  # [-1, -1]
+print("Q14:", search_range([], 0))                    # [-1, -1]
