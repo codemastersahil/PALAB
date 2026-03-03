@@ -1,0 +1,209 @@
+# ============================================================
+# Experiment List 02 Feb 2026 To 07 Feb 2026
+# School of Computer Science and Engineering
+# Programming Ability and Logic Building - 1
+# ============================================================
+
+# ── LECTURE 1 — IN CLASS ────────────────────────────────────
+
+# Q1. Chocolate Distribution Problem
+# Link: https://www.geeksforgeeks.org/problems/chocolate-distribution-problem3825/1
+def chocolate_distribution(arr, m):
+    if m == 0 or len(arr) < m:
+        return 0
+    arr.sort()
+    min_diff = float('inf')
+    for i in range(len(arr) - m + 1):
+        diff = arr[i + m - 1] - arr[i]
+        min_diff = min(min_diff, diff)
+    return min_diff
+
+print("Q1:", chocolate_distribution([3, 4, 1, 9, 56, 7, 9, 12], 5))  # 6
+print("Q1:", chocolate_distribution([7, 3, 2, 4, 9, 12, 56], 3))     # 2
+print("Q1:", chocolate_distribution([3, 4, 1, 9, 56], 5))            # 55
+
+
+# Q2. Smallest Subarray with Sum Greater than X
+# Link: https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5651/1
+def smallest_subarray_sum_greater(x, arr):
+    n = len(arr)
+    min_len = float('inf')
+    start = 0
+    curr_sum = 0
+    for end in range(n):
+        curr_sum += arr[end]
+        while curr_sum > x and start <= end:
+            min_len = min(min_len, end - start + 1)
+            curr_sum -= arr[start]
+            start += 1
+    return 0 if min_len == float('inf') else min_len
+
+print("Q2:", smallest_subarray_sum_greater(51, [1, 4, 45, 6, 0, 19]))  # 3
+print("Q2:", smallest_subarray_sum_greater(100, [1, 10, 5, 2, 7]))     # 0
+
+
+# ── LECTURE 1 — TAKE HOME ───────────────────────────────────
+
+# Q3. Three-Way Partitioning
+# Link: https://www.geeksforgeeks.org/problems/three-way-partitioning/1
+def three_way_partition(arr, a, b):
+    low, mid, high = 0, 0, len(arr) - 1
+    while mid <= high:
+        if arr[mid] < a:
+            arr[low], arr[mid] = arr[mid], arr[low]
+            low += 1
+            mid += 1
+        elif arr[mid] > b:
+            arr[mid], arr[high] = arr[high], arr[mid]
+            high -= 1
+        else:
+            mid += 1
+    return arr
+
+print("Q3:", three_way_partition([1, 2, 3, 3, 4], 1, 2))       # valid partition
+print("Q3:", three_way_partition([1, 4, 3, 6, 2, 1], 1, 3))    # valid partition
+
+
+# Q4. Minimum Swaps to Group Elements <= K
+# Link: https://www.geeksforgeeks.org/problems/minimum-swaps-required-to-bring-all-elements-less-than-or-equal-to-k-together4847/1
+def min_swaps_k(arr, k):
+    n = len(arr)
+    count = sum(1 for x in arr if x <= k)
+    bad = sum(1 for x in arr[:count] if x > k)
+    min_bad = bad
+    for i in range(count, n):
+        if arr[i] > k:
+            bad += 1
+        if arr[i - count] > k:
+            bad -= 1
+        min_bad = min(min_bad, bad)
+    return min_bad
+
+print("Q4:", min_swaps_k([2, 1, 5, 6, 3], 3))          # 1
+print("Q4:", min_swaps_k([2, 7, 9, 5, 8, 7, 4], 6))    # 2
+print("Q4:", min_swaps_k([2, 4, 5, 3, 6, 1, 8], 6))    # 0
+
+
+# Q5. All Palindrome Numbers in Array (Take Home)
+def is_palindrome_num(n):
+    s = str(n)
+    return s == s[::-1]
+
+def all_palindromes(arr):
+    return all(is_palindrome_num(x) for x in arr)
+
+print("Q5:", all_palindromes([111, 222, 333, 444, 555]))  # True
+print("Q5:", all_palindromes([121, 131, 20]))             # False
+
+
+# ── LECTURE 2 — IN CLASS ────────────────────────────────────
+
+# Q6. Find the Median of an Array
+# Link: https://www.geeksforgeeks.org/problems/find-the-median0527/1
+def find_median(arr):
+    arr.sort()
+    n = len(arr)
+    if n % 2 == 1:
+        return arr[n // 2]
+    else:
+        return (arr[n // 2 - 1] + arr[n // 2]) / 2
+
+print("Q6:", find_median([90, 100, 78, 89, 67]))   # 89
+print("Q6:", find_median([56, 67, 30, 79]))        # 61.5
+print("Q6:", find_median([1, 2]))                  # 1.5
+
+
+# Q7. Spiral Traversal of Matrix
+# Link: https://www.geeksforgeeks.org/problems/spirally-traversing-a-matrix1587115621/1
+def spiral_order(mat):
+    result = []
+    if not mat:
+        return result
+    top, bottom, left, right = 0, len(mat) - 1, 0, len(mat[0]) - 1
+    while top <= bottom and left <= right:
+        for col in range(left, right + 1):
+            result.append(mat[top][col])
+        top += 1
+        for row in range(top, bottom + 1):
+            result.append(mat[row][right])
+        right -= 1
+        if top <= bottom:
+            for col in range(right, left - 1, -1):
+                result.append(mat[bottom][col])
+            bottom -= 1
+        if left <= right:
+            for row in range(bottom, top - 1, -1):
+                result.append(mat[row][left])
+            left += 1
+    return result
+
+print("Q7:", spiral_order([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]))
+# [1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10]
+
+
+# ── LECTURE 2 — TAKE HOME ───────────────────────────────────
+
+# Q8. Search a 2D Matrix — O(log(m*n))
+# Link: https://leetcode.com/problems/search-a-2d-matrix/
+def search_matrix(matrix, target):
+    m, n = len(matrix), len(matrix[0])
+    left, right = 0, m * n - 1
+    while left <= right:
+        mid = (left + right) // 2
+        val = matrix[mid // n][mid % n]
+        if val == target:
+            return True
+        elif val < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return False
+
+print("Q8:", search_matrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 3))   # True
+print("Q8:", search_matrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 13))  # False
+
+
+# Q9. Median of a Row-Wise Sorted Matrix
+# Link: https://www.geeksforgeeks.org/problems/median-in-a-row-wise-sorted-matrix1527/1
+import bisect
+
+def matrix_median(mat):
+    r, c = len(mat), len(mat[0])
+    desired = (r * c + 1) // 2
+    lo, hi = 1, 10**9
+    while lo < hi:
+        mid = (lo + hi) // 2
+        count = sum(bisect.bisect_right(row, mid) for row in mat)
+        if count >= desired:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+print("Q9:", matrix_median([[1,3,5],[2,6,9],[3,6,9]]))           # 5
+print("Q9:", matrix_median([[2,4,9],[3,6,7],[4,7,10]]))          # 6
+
+
+# Q10. Row with Maximum 1s
+# Link: https://www.geeksforgeeks.org/problems/row-with-max-1s0023/1
+def row_with_max_ones(arr):
+    max_ones = 0
+    result = -1
+    for i, row in enumerate(arr):
+        # Binary search for first 1
+        lo, hi = 0, len(row)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if row[mid] == 0:
+                lo = mid + 1
+            else:
+                hi = mid
+        ones = len(row) - lo
+        if ones > max_ones:
+            max_ones = ones
+            result = i
+    return result
+
+print("Q10:", row_with_max_ones([[0,1,1,1],[0,0,1,1],[1,1,1,1],[0,0,0,0]]))  # 2
+print("Q10:", row_with_max_ones([[0,0],[1,1]]))                               # 1
+print("Q10:", row_with_max_ones([[0,0],[0,0]]))                               # -1
