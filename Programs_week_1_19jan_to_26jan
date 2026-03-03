@@ -1,0 +1,149 @@
+# ============================================================
+# Programs Week 1 - 19 Jan to 26 Jan
+# School of Computer Science and Engineering
+# Programming Ability and Logic Building - 1
+# ============================================================
+
+# ── LECTURE 1 — IN CLASS ────────────────────────────────────
+
+# Q1. Reverse an Array (In-Place)
+# Link: https://www.geeksforgeeks.org/problems/reverse-an-array/1
+def reverse_array(arr):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
+    return arr
+
+print("Q1:", reverse_array([1, 4, 3, 2, 6, 5]))   # [5, 6, 2, 3, 4, 1]
+
+
+# Q2. Find Minimum and Maximum Element in Array (In Class)
+# Link: https://www.geeksforgeeks.org/problems/find-minimum-and-maximum-element-in-an-array4428/1
+def find_min_max(arr):
+    mn, mx = arr[0], arr[0]
+    for x in arr[1:]:
+        if x < mn: mn = x
+        if x > mx: mx = x
+    return [mn, mx]
+
+print("Q2:", find_min_max([1, 4, 3, 5, 8, 6]))   # [1, 8]
+
+
+# ── LECTURE 1 — TAKE HOME ───────────────────────────────────
+
+# Q3. Kth Smallest Element
+# Link: https://www.geeksforgeeks.org/problems/kth-smallest-element5635/1
+def kth_smallest(arr, k):
+    return sorted(arr)[k - 1]
+
+print("Q3:", kth_smallest([10, 5, 4, 3, 48, 6, 2, 33, 53, 10], 4))  # 5
+print("Q3:", kth_smallest([7, 10, 4, 3, 20, 15], 3))                 # 7
+
+
+# Q4. Union of Two Arrays
+# Link: https://www.geeksforgeeks.org/problems/union-of-two-arrays3538/1
+def union_arrays(a, b):
+    return sorted(set(a) | set(b))
+
+print("Q4:", union_arrays([1, 2, 3, 2, 1], [3, 2, 2, 3, 3, 2]))  # [1, 2, 3]
+
+
+# Q5. Largest Element in Array
+# Link: https://www.geeksforgeeks.org/problems/largest-element-in-array4009/0
+def largest_element(arr):
+    result = arr[0]
+    for x in arr[1:]:
+        if x > result:
+            result = x
+    return result
+
+print("Q5:", largest_element([1, 8, 7, 56, 90]))  # 90
+
+
+# ── LECTURE 2 — IN CLASS ────────────────────────────────────
+
+# Q6. Cyclically Rotate Array by One
+# Link: https://www.geeksforgeeks.org/problems/cyclically-rotate-an-array-by-one2614/1
+def rotate_by_one(arr):
+    if not arr:
+        return arr
+    last = arr[-1]
+    for i in range(len(arr) - 1, 0, -1):
+        arr[i] = arr[i - 1]
+    arr[0] = last
+    return arr
+
+print("Q6:", rotate_by_one([1, 2, 3, 4, 5]))  # [5, 1, 2, 3, 4]
+
+
+# Q7. Maximum Subarray Sum — Kadane's Algorithm
+# Link: https://practice.geeksforgeeks.org/problems/kadanes-algorithm/0
+def max_subarray_sum(arr):
+    max_sum = arr[0]
+    current_sum = arr[0]
+    for x in arr[1:]:
+        current_sum = max(x, current_sum + x)
+        max_sum = max(max_sum, current_sum)
+    return max_sum
+
+print("Q7:", max_subarray_sum([2, 3, -8, 7, -1, 2, 3]))  # 11
+
+
+# ── LECTURE 2 — TAKE HOME ───────────────────────────────────
+
+# Q8. Search Insert Position — Binary Search
+# Link: https://leetcode.com/problems/search-insert-position/
+def search_insert(nums, target):
+    left, right = 0, len(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+print("Q8:", search_insert([1, 3, 5, 6], 5))  # 2
+print("Q8:", search_insert([1, 3, 5, 6], 2))  # 1
+print("Q8:", search_insert([1, 3, 5, 6], 7))  # 4
+
+
+# Q9. Two Sum
+# Link: https://leetcode.com/problems/two-sum/
+def two_sum(nums, target):
+    seen = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return []
+
+print("Q9:", two_sum([2, 7, 11, 15], 9))  # [0, 1]
+
+
+# Q10. Minimum Number of Jumps
+# Link: https://www.geeksforgeeks.org/problems/minimum-number-of-jumps-1587115620/1
+def min_jumps(arr):
+    n = len(arr)
+    if n == 1:
+        return 0
+    if arr[0] == 0:
+        return -1
+    jumps = 0
+    current_end = 0
+    farthest = 0
+    for i in range(n - 1):
+        farthest = max(farthest, i + arr[i])
+        if i == current_end:
+            jumps += 1
+            current_end = farthest
+            if current_end >= n - 1:
+                return jumps
+    return -1
+
+print("Q10:", min_jumps([1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9]))  # 3
+print("Q10:", min_jumps([1, 4, 3, 2, 6, 7]))                  # 2
+print("Q10:", min_jumps([0, 10, 20]))                          # -1
